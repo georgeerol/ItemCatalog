@@ -1,12 +1,11 @@
 <ul class="list-group">
-	{% if items and quantity > 0 %}
-	    {% for i in items %}
-	    <li class="list-group-item">
-			<div class="row">
-				<div class="col-md-12">
-				<!-- <img class="img-thumbnail pull-left" src="http://placehold.it/150" alt="image placeholder" /> -->
+    {% if items and quantity > 0 %}
+    {% for i in items %}
+    <li class="list-group-item">
+        <div class="row">
+            <div class="col-md-12">
 					<span class="name">
-						<a href="{{ url_for('showCatalogItem', category_id=i.category_id, catalog_item_id=i.id) }}" >
+						<a href="{{ url_for('showCatalogItem', category_id=i.category_id, catalog_item_id=i.id) }}">
 							<h3>{{i.name}}</a><br><small>({{ i.category.name }})</small>
 							{% if i.user_id == session.user_id %}
 							<div class="editdeletepane pull-right">
@@ -24,21 +23,21 @@
 								</a>
 							</div>
 							{% endif %}
-						</h3>
+                        </h3>
 					</span>
-					{% if creator %}
-					<div>
-						Created By:  {{ creator.email }}
-					{% endif %}		
-				</div>
-			</div>
-	    </li>
-	    {% endfor %}
-	{% else %}
-	<ul>
-	    <li class="list-group-item">
-	        You currently have no menu items.
-	    </li>
-	</ul>
-	{% endif %}
+                {% if creator %}
+                <div>
+                    Created By: {{ creator.email }}
+                    {% endif %}
+                </div>
+            </div>
+    </li>
+    {% endfor %}
+    {% else %}
+    <ul>
+        <li class="list-group-item">
+            You currently have no category items.
+        </li>
+    </ul>
+    {% endif %}
 </ul>

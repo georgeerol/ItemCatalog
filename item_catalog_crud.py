@@ -30,6 +30,27 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 
+def create_category(login_session):
+    """
+    Create new category
+    :param login_session:
+    """
+    new_category = Category(name=request.form['name'], user_id=login_session['user_id'])
+    session.add(new_category)
+    session.commit()
+
+
+def create_category_item(login_session):
+    add_new_item = CatalogItem(
+        name=request.form['name'],
+        description=request.form['description'],
+        price=request.form['price'],
+        category_id=request.form['category'],
+        user_id=login_session['user_id'])
+    session.add(add_new_item)
+    session.commit()
+
+
 def read_catalog():
     """
     Read the Catalog page with all categories.
@@ -70,6 +91,18 @@ def read_category_item_info(category_id, catalog_item_id):
     return creator, category, item
 
 
+def update_category_item(catalog_item_id):
+    edited_item = session.query(CatalogItem).filter_by(id=catalog_item_id).one()
+    if request.form['name']:
+        edited_item.name = request.form['name']
+    if request.form['description']:
+        edited_item.description = request.form['description']
+    if request.form['price']:
+        edited_item.price = request.form['price']
+    session.add(edited_item)
+    session.commit()
+
+
 def delete_category(category_id):
     category = session.query(Category).filter_by(id=category_id).one()
     session.delete(category)
@@ -79,16 +112,6 @@ def delete_category(category_id):
 def delete_category_item(category_item_id):
     item = session.query(CatalogItem).filter_by(id=category_item_id).one()
     session.delete(item)
-    session.commit()
-
-
-def create(login_session):
-    """
-    Create new category
-    :param login_session:
-    """
-    new_category = Category(name=request.form['name'], user_id=login_session['user_id'])
-    session.add(new_category)
     session.commit()
 
 
