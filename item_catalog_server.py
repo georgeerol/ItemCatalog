@@ -162,19 +162,30 @@ def showCatalog():
     print("Showing The Catalog")
     categories, items, quantity = read_catalog()
     if 'username' not in login_session:
-        return render_template('public_catalog.html', categories=categories, items=items, quantity=quantity)
+        return render_template('public_catalog.html',
+                               categories=categories,
+                               items=items,
+                               quantity=quantity)
     else:
-        return render_template('catalog.html', categories=categories, items=items, quantity=quantity)
+        return render_template('catalog.html',
+                               categories=categories,
+                               items=items,
+                               quantity=quantity)
 
 
-@app.route('/categories/<int:category_id>/item/<int:catalog_item_id>/')
+@app.route('/categories/'
+           '<int:category_id>/item/<int:catalog_item_id>/')
 def showCatalogItem(category_id, catalog_item_id):
     """
     Showing Category Item
     :return category item
     """
-    creator, category, item = read_category_item_info(category_id, catalog_item_id)
-    return render_template('catalog_menu_item.html', category=category, item=item, creator=creator)
+    creator, category, item = \
+        read_category_item_info(category_id, catalog_item_id)
+    return render_template('catalog_menu_item.html',
+                           category=category,
+                           item=item,
+                           creator=creator)
 
 
 @app.route('/categories/<int:category_id>/')
@@ -184,16 +195,22 @@ def showCategoryItems(category_id):
     Showing Category Items
     :return: items in category
     """
-    creator, category, categories, items, quantity = read_category_items_info(category_id)
-    return render_template('catalog_menu.html', categories=categories, category=category, items=items,
-                           quantity=quantity, creator=creator)
+    creator, category, categories, items, quantity = \
+        read_category_items_info(category_id)
+    return render_template('catalog_menu.html',
+                           categories=categories,
+                           category=category,
+                           items=items,
+                           quantity=quantity,
+                           creator=creator)
 
 
 # ------------------------------------------------------------------
 #                       User Delete Routes
 # ------------------------------------------------------------------
 
-@app.route('/categories/<int:category_id>/delete/', methods=['GET', 'POST'])
+@app.route('/categories/'
+           '<int:category_id>/delete/', methods=['GET', 'POST'])
 @login_required
 def deleteCategory(category_id):
     """
@@ -201,16 +218,21 @@ def deleteCategory(category_id):
     """
     category_to_delete = read_category(category_id)
     if category_to_delete.user_id != login_session['user_id']:
-        return "<script>function myFunction() {alert('You are not authorized!')}</script><body onload='myFunction()'>"  # noqa
+        return "<script>function myFunction() " \
+               "{alert('You are not authorized!')}" \
+               "</script><body onload='myFunction()'>"  # noqa
     if request.method == 'POST':
         delete_category(category_id)
         flash('%s Successfully Deleted' % category_to_delete.name, 'success')
-        return redirect(url_for('showCatalog', category_id=category_id))
+        return redirect(url_for('showCatalog',
+                                category_id=category_id))
     else:
-        return render_template('delete_category.html', category=category_to_delete)
+        return render_template('delete_category.html',
+                               category=category_to_delete)
 
 
-@app.route('/categories/<int:category_id>/item/<int:catalog_item_id>/delete', methods=['GET', 'POST'])
+@app.route('/categories/<int:category_id>/'
+           'item/<int:catalog_item_id>/delete', methods=['GET', 'POST'])
 @login_required
 def deleteCatalogItem(category_id, catalog_item_id):
     """
@@ -218,7 +240,9 @@ def deleteCatalogItem(category_id, catalog_item_id):
     """
     item_to_delete = read_category_item(catalog_item_id)
     if item_to_delete.user_id != login_session['user_id']:
-        return "<script>function myFunction() {alert('You are not authorized!')}</script><body onload='myFunction()'>"  # noqa
+        return "<script>function myFunction() " \
+               "{alert('You are not authorized!')}" \
+               "</script><body onload='myFunction()'>"  # noqa
     if request.method == 'POST':
         delete_category_item(catalog_item_id)
         flash('Catalog Item Successfully Deleted', 'success')
@@ -232,7 +256,8 @@ def deleteCatalogItem(category_id, catalog_item_id):
 #                       User Edit Routes
 # ------------------------------------------------------------------
 
-@app.route('/categories/<int:category_id>/edit/', methods=['GET', 'POST'])
+@app.route('/categories/'
+           '<int:category_id>/edit/', methods=['GET', 'POST'])
 @login_required
 def editCategory(category_id):
     """
@@ -241,17 +266,22 @@ def editCategory(category_id):
     print("Editing Category")
     edit_category = read_category(category_id)
     if edit_category.user_id != login_session['user_id']:
-        return "<script>function myFunction() {alert('You are not authorized!')}</script><body onload='myFunction()'>"  # noqa
+        return "<script>function myFunction() " \
+               "{alert('You are not authorized!')}" \
+               "</script><body onload='myFunction()'>"  # noqa
     if request.method == 'POST':
         if request.form['name']:
             edit_category.name = request.form['name']
-            flash('Category Successfully Edited %s' % edit_category.name, 'success')
+            flash('Category Successfully Edited %s'
+                  % edit_category.name, 'success')
             return redirect(url_for('showCatalog'))
     else:
-        return render_template('edit_category.html', category=edit_category)
+        return render_template('edit_category.html',
+                               category=edit_category)
 
 
-@app.route('/categories/<int:category_id>/item/<int:catalog_item_id>/edit', methods=['GET', 'POST'])
+@app.route('/categories/<int:category_id>'
+           '/item/<int:catalog_item_id>/edit', methods=['GET', 'POST'])
 @login_required
 def editCatalogItem(category_id, catalog_item_id):
     """
@@ -259,14 +289,17 @@ def editCatalogItem(category_id, catalog_item_id):
     """
     editedItem = session.query(CatalogItem).filter_by(id=catalog_item_id).one()
     if editedItem.user_id != login_session['user_id']:
-        return "<script>function myFunction() {alert('You are not authorized!')}</script><body onload='myFunction()'>"  # noqa
+        return "<script>function myFunction() " \
+               "{alert('You are not authorized!')}</script>" \
+               "<body onload='myFunction()'>"
     if request.method == 'POST':
         update_category_item(catalog_item_id)
         flash("Catalog item updated!", 'success')
         return redirect(url_for('showCatalog'))
     else:
         categories = session.query(Category).all()
-        return render_template('edit_catalog_item.html', categories=categories, item=editedItem)
+        return render_template('edit_catalog_item.html',
+                               categories=categories, item=editedItem)
 
 
 # ------------------------------------------------------------------
@@ -282,7 +315,8 @@ def showCatalogJSON():
     return show_catalog_items()
 
 
-@app.route('/api/v1/categories/<int:category_id>/item/<int:catalog_item_id>/JSON')
+@app.route('/api/v1/categories/'
+           '<int:category_id>/item/<int:catalog_item_id>/JSON')
 def showCatalogItemJSON(category_id, catalog_item_id):
     return show_select_item(catalog_item_id)
 

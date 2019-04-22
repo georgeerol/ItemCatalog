@@ -35,7 +35,8 @@ def create_category(login_session):
     Create new category
     :param login_session:
     """
-    new_category = Category(name=request.form['name'], user_id=login_session['user_id'])
+    new_category = Category(name=request.form['name'],
+                            user_id=login_session['user_id'])
     session.add(new_category)
     session.commit()
 
@@ -88,7 +89,8 @@ def read_category_items_info(category_id):
     category = session.query(Category).filter_by(id=category_id).one()
     categories = session.query(Category).all()
     creator = get_user_id(category.user_id)
-    items = session.query(CatalogItem).filter_by(category_id=category_id).order_by(CatalogItem.id.desc())
+    items = session.query(CatalogItem).\
+        filter_by(category_id=category_id).order_by(CatalogItem.id.desc())
     quantity = items.count()
     return creator, category, categories, items, quantity
 
@@ -102,7 +104,8 @@ def read_category_item_info(category_id, catalog_item_id):
 
 
 def update_category_item(catalog_item_id):
-    edited_item = session.query(CatalogItem).filter_by(id=catalog_item_id).one()
+    edited_item = session.query(CatalogItem).\
+        filter_by(id=catalog_item_id).one()
     if request.form['name']:
         edited_item.name = request.form['name']
     if request.form['description']:
