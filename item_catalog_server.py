@@ -48,7 +48,7 @@ from item_catalog_crud import create_category_item
 
 from item_catalog_apis import show_catalog_items
 from item_catalog_apis import show_catalog_categories
-from item_catalog_apis import  show_select_item
+from item_catalog_apis import show_select_item
 
 app = Flask(__name__)
 
@@ -105,6 +105,7 @@ def login_required(f):
 @app.route('/disconnect')
 def disconnect():
     return logout(CLIENT_ID)
+
 
 # ------------------------------------------------------------------
 #                       User Create Routes
@@ -267,6 +268,7 @@ def editCatalogItem(category_id, catalog_item_id):
         categories = session.query(Category).all()
         return render_template('edit_catalog_item.html', categories=categories, item=editedItem)
 
+
 # ------------------------------------------------------------------
 #                       Catalog JSON APIs
 # ------------------------------------------------------------------
@@ -274,9 +276,11 @@ def editCatalogItem(category_id, catalog_item_id):
 def showCategoriesJSON():
     return show_catalog_categories()
 
+
 @app.route('/api/v1/items/JSON')
 def showCatalogJSON():
     return show_catalog_items()
+
 
 @app.route('/api/v1/categories/<int:category_id>/item/<int:catalog_item_id>/JSON')
 def showCatalogItemJSON(category_id, catalog_item_id):
