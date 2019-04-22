@@ -1,8 +1,14 @@
 # Item Catalog
 
-This project provides a list of items within a variety of categories as well
+This REST project provides a list of items within a variety of categories as well
 as providing a user registration and authentication system. Registered user have
 the ability to post edit and delete their own items.
+
+Framework used in this project are:
+* Bootstrap
+* Flask
+* SQLAChemy
+* OAuth with Facebook and Goolge Login
 
 ## Prerequisite
 
