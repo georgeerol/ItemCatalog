@@ -1,5 +1,5 @@
 body {
-	background-color: rgb(240, 240, 240);
+	background-color: rgba(0,0,0,.075);
 }
 
 nav {
@@ -15,7 +15,7 @@ a:hover {
 	text-decoration: none;
 }
 
-ul, 
+ul,
 li {
 	list-style-type: none
 }
