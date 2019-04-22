@@ -27,7 +27,7 @@ import httplib2
 from functools import wraps
 
 from item_catalog_crud import read_catalog
-from item_catalog_crud import read_category_items
+from item_catalog_crud import read_category_items_info
 from item_catalog_crud import read_category_item_info
 from item_catalog_crud import read_category_item
 from item_catalog_login import login
@@ -45,6 +45,10 @@ from item_catalog_crud import update_category_item
 from item_catalog_crud import delete_category
 from item_catalog_crud import delete_category_item
 from item_catalog_crud import create_category_item
+
+from item_catalog_apis import show_catalog_items
+from item_catalog_apis import show_catalog_categories
+from item_catalog_apis import  show_select_item
 
 app = Flask(__name__)
 
@@ -97,6 +101,10 @@ def login_required(f):
 
     return decorated_function
 
+
+@app.route('/disconnect')
+def disconnect():
+    return logout(CLIENT_ID)
 
 # ------------------------------------------------------------------
 #                       User Create Routes
@@ -175,7 +183,7 @@ def showCategoryItems(category_id):
     Showing Category Items
     :return: items in category
     """
-    creator, category, categories, items, quantity = read_category_items(category_id)
+    creator, category, categories, items, quantity = read_category_items_info(category_id)
     return render_template('catalog_menu.html', categories=categories, category=category, items=items,
                            quantity=quantity, creator=creator)
 
@@ -259,10 +267,20 @@ def editCatalogItem(category_id, catalog_item_id):
         categories = session.query(Category).all()
         return render_template('edit_catalog_item.html', categories=categories, item=editedItem)
 
+# ------------------------------------------------------------------
+#                       Catalog JSON APIs
+# ------------------------------------------------------------------
+@app.route('/api/v1/categories/JSON')
+def showCategoriesJSON():
+    return show_catalog_categories()
 
-@app.route('/disconnect')
-def disconnect():
-    return logout(CLIENT_ID)
+@app.route('/api/v1/items/JSON')
+def showCatalogJSON():
+    return show_catalog_items()
+
+@app.route('/api/v1/categories/<int:category_id>/item/<int:catalog_item_id>/JSON')
+def showCatalogItemJSON(category_id, catalog_item_id):
+    return show_select_item(catalog_item_id)
 
 
 if __name__ == '__main__':

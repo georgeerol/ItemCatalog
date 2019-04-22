@@ -74,7 +74,17 @@ def read_category_item(category_item_id):
     return item
 
 
-def read_category_items(category_id):
+def read_categories():
+    categories = session.query(Category).all()
+    return categories
+
+
+def read_category_items():
+    items = session.query(CatalogItem).order_by(CatalogItem.id.desc())
+    return items
+
+
+def read_category_items_info(category_id):
     category = session.query(Category).filter_by(id=category_id).one()
     categories = session.query(Category).all()
     creator = get_user_id(category.user_id)
