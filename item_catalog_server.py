@@ -6,49 +6,13 @@ from flask import redirect
 from flask import flash
 from flask import url_for
 from flask import session as login_session
-from flask import make_response
-
-# Sqlalchemy
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from database_setup import Base, CatalogItem, Category, User
-
-# Oath2client
-from oauth2client.client import flow_from_clientsecrets
-from oauth2client.client import FlowExchangeError
-
-import json
-import requests
-import random
-import string
-import httplib2
 
 # Functools
 from functools import wraps
 
-from item_catalog_crud import read_catalog
-from item_catalog_crud import read_category_items_info
-from item_catalog_crud import read_category_item_info
-from item_catalog_crud import read_category_item
-from item_catalog_login import login
-from item_catalog_login import logout
-from item_catalog_login import google_connect
-from item_catalog_login import facebook_connect
-from item_catalog_login import google_disconnect
-from item_catalog_login import facebook_disconnect
-from item_catalog_crud import create_category
-from item_catalog_crud import get_user_id
-from item_catalog_crud import create_user
-from item_catalog_crud import read_category
-from item_catalog_crud import read_category_item_info
-from item_catalog_crud import update_category_item
-from item_catalog_crud import delete_category
-from item_catalog_crud import delete_category_item
-from item_catalog_crud import create_category_item
-
-from item_catalog_apis import show_catalog_items
-from item_catalog_apis import show_catalog_categories
-from item_catalog_apis import show_select_item
+from item_catalog_crud import *
+from item_catalog_login import *
+from item_catalog_apis import *
 
 app = Flask(__name__)
 
@@ -287,8 +251,8 @@ def editCatalogItem(category_id, catalog_item_id):
     """
     Allows a user to edit category item
     """
-    editedItem = session.query(CatalogItem).filter_by(id=catalog_item_id).one()
-    if editedItem.user_id != login_session['user_id']:
+    edited_item = read_category_item(catalog_item_id)
+    if edited_item.user_id != login_session['user_id']:
         return "<script>function myFunction() " \
                "{alert('You are not authorized!')}</script>" \
                "<body onload='myFunction()'>"
@@ -299,7 +263,7 @@ def editCatalogItem(category_id, catalog_item_id):
     else:
         categories = session.query(Category).all()
         return render_template('edit_catalog_item.html',
-                               categories=categories, item=editedItem)
+                               categories=categories, item=edited_item)
 
 
 # ------------------------------------------------------------------
@@ -307,17 +271,29 @@ def editCatalogItem(category_id, catalog_item_id):
 # ------------------------------------------------------------------
 @app.route('/api/v1/categories/JSON')
 def showCategoriesJSON():
+    """
+    Show Catalog Categories as JSON
+    :return: Categories JSON
+    """
     return show_catalog_categories()
 
 
 @app.route('/api/v1/items/JSON')
-def showCatalogJSON():
+def showItemsJSON():
+    """
+    Show Catalog Items as JSON
+    :return: Items JSON
+    """
     return show_catalog_items()
 
 
 @app.route('/api/v1/categories/'
            '<int:category_id>/item/<int:catalog_item_id>/JSON')
 def showCatalogItemJSON(category_id, catalog_item_id):
+    """
+    Show Catalog Item
+    :return:  Item JSON
+    """
     return show_select_item(catalog_item_id)
 
 
