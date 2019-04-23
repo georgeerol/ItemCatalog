@@ -184,7 +184,7 @@ def deleteCategory(category_id):
     if category_to_delete.user_id != login_session['user_id']:
         return "<script>function myFunction() " \
                "{alert('You are not authorized!')}" \
-               "</script><body onload='myFunction()'>"  # noqa
+               "</script><body onload='myFunction()'>"
     if request.method == 'POST':
         delete_category(category_id)
         flash('%s Successfully Deleted' % category_to_delete.name, 'success')
@@ -206,7 +206,7 @@ def deleteCatalogItem(category_id, catalog_item_id):
     if item_to_delete.user_id != login_session['user_id']:
         return "<script>function myFunction() " \
                "{alert('You are not authorized!')}" \
-               "</script><body onload='myFunction()'>"  # noqa
+               "</script><body onload='myFunction()'>"
     if request.method == 'POST':
         delete_category_item(catalog_item_id)
         flash('Catalog Item Successfully Deleted', 'success')
@@ -232,7 +232,7 @@ def editCategory(category_id):
     if edit_category.user_id != login_session['user_id']:
         return "<script>function myFunction() " \
                "{alert('You are not authorized!')}" \
-               "</script><body onload='myFunction()'>"  # noqa
+               "</script><body onload='myFunction()'>"
     if request.method == 'POST':
         if request.form['name']:
             edit_category.name = request.form['name']

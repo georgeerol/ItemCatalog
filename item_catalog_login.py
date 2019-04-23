@@ -8,11 +8,6 @@ from flask import url_for
 from flask import session as login_session
 from flask import make_response
 
-# Sqlalchemy
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from database_setup import Base, CatalogItem, Category, User
-
 # Oath2client
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
@@ -167,7 +162,8 @@ def google_disconnect():
         return response
     # execute HTTP GET request to revoke current token
     access_token = credentials.access_token
-    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % access_token  # noqa
+    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' \
+          % access_token
     h = httplib2.Http()
     result = h.request(url, 'GET')[0]
 
@@ -217,7 +213,8 @@ def facebook_connect():
     # strip expire tag from access token
     token = result.split("&")[0]
 
-    url = 'https://graph.facebook.com/v2.8/me?fields=id%2Cname%2Cemail%2Cpicture&access_token=' + access_token  # noqa
+    url = 'https://graph.facebook.com/v2.8/me?' \
+          'fields=id%2Cname%2Cemail%2Cpicture&access_token=' + access_token
     h = httplib2.Http()
     result = h.request(url, 'GET')[1]
     # print "url sent for API access:%s"% url
@@ -249,7 +246,11 @@ def facebook_connect():
     output += '!</h1>'
     output += '<img src="'
     output += login_session['picture']
-    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '  # noqa
+    output += ' " style = "width: 300px; ' \
+              'height: 300px;' \
+              'border-radius: 150px;' \
+              '-webkit-border-radius: 150px;' \
+              '-moz-border-radius: 150px;"> '
 
     flash("Now logged in as %s" % login_session['username'], 'success')
     return output
@@ -259,7 +260,8 @@ def facebook_disconnect():
     facebook_id = login_session['facebook_id']
     # The access token must me included to successfully logout
     access_token = login_session['access_token']
-    url = 'https://graph.facebook.com/%s/permissions?access_token=%s' % (facebook_id, access_token)  # noqa
+    url = 'https://graph.facebook.com/%s/permissions?access_token=%s' \
+          % (facebook_id, access_token)
     h = httplib2.Http()
     result = h.request(url, 'DELETE')[1]
     return "you have been logged out"
